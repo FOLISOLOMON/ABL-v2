@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --royal: 228 64% 33%;
+    --royal-foreground: 0 0% 100%;
+    --orange: 25 95% 53%;
+    --orange-foreground: 0 0% 100%;
+
+    --chart-1: 228 64% 33%;
+    --chart-2: 25 95% 53%;
+    --chart-3: 0 0% 45%;
+    --chart-4: 40 33% 60%;
+    --chart-5: 0 0% 10%;
+  }
+
+  body {
+    background-color: #faf8f3;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: #f97316;
+    color: #ffffff;
+  }
+
+  /* Reduced motion: disable all animations for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    .gsap-parallax-layer {
+      transform: none !important;
+    }
+
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .scroll-indicator {
+      display: none !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+  .font-body {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+  .tracking-editorial {
+    letter-spacing: 0.15em;
+  }
+  .tracking-editorial-wide {
+    letter-spacing: 0.3em;
+  }
+  .editorial-label {
+    @apply text-xs uppercase tracking-editorial font-body font-medium;
+  }
+  .container-wide {
+    @apply mx-auto w-full max-w-[1400px] px-6 md:px-10 lg:px-16;
+  }
+  .container-narrow {
+    @apply mx-auto w-full max-w-3xl px-6 md:px-10;
+  }
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 -bottom-0.5 h-px w-0 bg-current transition-all duration-300 ease-out;
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+  .text-shadow-hero {
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  /* Parallax utility classes for GSAP layers */
+  .parallax-bg {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .parallax-mid {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .parallax-fg {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Animation utility classes */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+}
+
+@keyframes scrollLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #faf8f3;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6d0c4;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8b0a0;
+}
