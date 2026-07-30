@@ -64,28 +64,8 @@ export const services: Service[] = [
       'https://images.pexels.com/photos/1620763/pexels-photo-1620763.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
-    id: 'fascinators',
-    number: '06',
-    title: 'Fascinators',
-    description:
-      'Handcrafted headpieces that complete your look. Our fascinators are designed to turn heads and add that final touch of elegance to any occasion.',
-    benefits: ['Custom designs', 'Premium materials', 'Matching accessories', 'Event-ready pieces'],
-    image:
-      'https://images.pexels.com/photos/2703202/pexels-photo-2703202.jpeg?auto=compress&cs=tinysrgb&w=1200',
-  },
-  {
-    id: 'alterations',
-    number: '07',
-    title: 'Alterations',
-    description:
-      'Already have a garment you love? We provide expert alterations to give you the perfect fit, because the right fit changes everything.',
-    benefits: ['Precision fitting', 'Resizing and reshaping', 'Quick turnaround', 'All garment types'],
-    image:
-      'https://images.pexels.com/photos/6311626/pexels-photo-6311626.jpeg?auto=compress&cs=tinysrgb&w=1200',
-  },
-  {
     id: 'ready-to-wear',
-    number: '08',
+    number: '06',
     title: 'Ready-to-Wear',
     description:
       'Curated collections of ready-to-wear fashion, designed and produced in-house. Premium quality without the wait, for when you need to look stunning now.',
@@ -95,7 +75,7 @@ export const services: Service[] = [
   },
   {
     id: 'traditional-wear',
-    number: '09',
+    number: '07',
     title: 'Traditional Wear',
     description:
       'Celebrating African heritage through every thread. Kente, ankara, and traditional Ghanaian garments designed with cultural pride and modern elegance.',
@@ -105,7 +85,7 @@ export const services: Service[] = [
   },
   {
     id: 'custom-made-outfits',
-    number: '10',
+    number: '08',
     title: 'Custom-Made Outfits',
     description:
       'Bring your inspiration, your idea, your vision. We turn it into a garment that fits perfectly and tells your story through fabric and form.',

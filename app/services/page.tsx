@@ -10,7 +10,7 @@ import { Check, ArrowRight } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Services',
   description:
-    'Explore ABL Fashion services: custom sewing, bridal wear, menswear, womenswear, childrenswear, fascinators, alterations, ready-to-wear, traditional wear, and custom-made outfits.',
+     'Explore ABL Fashion services: custom sewing, bridal wear, menswear, womenswear, childrenswear, fascinators, ready-to-wear, traditional wear, and custom-made outfits.',
   openGraph: {
     title: 'Services | ABL Fashion',
     description:

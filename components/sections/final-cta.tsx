@@ -46,6 +46,8 @@ export function FinalCTA() {
       });
 
       // Entrance timeline
+      const ctaTargets = Array.from(cta.children);
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -56,7 +58,7 @@ export function FinalCTA() {
 
       tl.from(heading, { opacity: 0, y: 30, duration: 1, ease: [0.22, 1, 0.36, 1] } as any)
         .from(copy, { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' } as any, '-=0.4')
-        .from(cta.children as any, { opacity: 0, y: 30, duration: 0.8, stagger: 0.1, ease: [0.22, 1, 0.36, 1] } as any, '-=0.4');
+        .from(ctaTargets, { y: 30, duration: 0.8, stagger: 0.1, ease: [0.22, 1, 0.36, 1] } as any, '-=0.4');
 
       // Decorative elements at varying speeds
       if (decor) {
@@ -84,7 +86,7 @@ export function FinalCTA() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[80svh] min-h-[500px] w-full overflow-hidden flex items-center"
+      className="relative h-[80svh] min-h-[500px] w-full overflow-hidden flex items-center py-16"
     >
       {/* Background layer (slowest - thick book at the bottom) */}
       <EnhancedParallaxLayer speed={0.3} className="absolute inset-0" as="div">

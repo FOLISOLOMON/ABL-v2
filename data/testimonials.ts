@@ -10,7 +10,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 'uk-client',
     quote:
-      "A UK based client was very grateful for all that was sewed for her despite the distance. There wasn't any alteration. Stitches on point, finishing on point. Lovely outfit for that special occasion.",
+      "A UK based client was very grateful for all that was sewed for her despite the distance. Stitches on point, finishing on point. Lovely outfit for that special occasion.",
     author: 'International Client',
     location: 'United Kingdom',
     featured: true,

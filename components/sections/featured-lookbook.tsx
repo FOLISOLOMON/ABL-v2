@@ -2,104 +2,38 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight, Eye } from 'lucide-react';
-import { EnhancedParallaxLayer } from '@/components/animation/reveal';
 import { collections } from '@/data/collections';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const previewItems = collections.slice(0, 4);
 
 export function FeaturedLookbook() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const header = headerRef.current;
-    const grid = gridRef.current;
-
-    if (!section || !header || !grid) return;
-
-    const ctx = gsap.context(() => {
-      const items = grid.querySelectorAll('.lookbook-item');
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          toggleActions: 'play none none none',
-        },
-      });
-
-      tl.from(header.children as any, { opacity: 0, y: 30, duration: 0.8, stagger: 0.15, ease: 'power3.out' } as any)
-        .from(items as any, {
-          opacity: 0,
-          y: 60,
-          scale: 0.95,
-          duration: 0.9,
-          stagger: 0.2,
-          ease: [0.22, 1, 0.36, 1],
-        } as any, '-=0.4');
-
-      // Parallax drift for each item at different speeds based on position
-      items.forEach((item, i) => {
-        const img = item.querySelector('img');
-        if (!img) return;
-
-        const speed = i % 2 === 0 ? 0.3 : 0.5;
-        gsap.to(img, {
-          y: speed * 100,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: item,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
-          },
-        });
-      });
-
-      // Heading parallax drift
-      const heading = header.querySelector('h2');
-      if (heading) {
-        gsap.to(heading, {
-          x: 20,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        });
-      }
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
 
   return (
     <section ref={sectionRef} className="py-32 md:py-44 bg-ivory overflow-hidden relative">
       {/* Background layer (slowest) */}
-      <EnhancedParallaxLayer speed={0.3} className="absolute inset-0" as="div">
+      <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-500/3 to-transparent" />
-      </EnhancedParallaxLayer>
+      </div>
 
       {/* Midground layer (medium) */}
-      <EnhancedParallaxLayer speed={0.5} className="absolute inset-0" as="div">
+      <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute top-1/3 right-10 w-48 h-48 bg-orange-500/5 rounded-full blur-2xl" />
-      </EnhancedParallaxLayer>
+      </div>
 
       {/* Foreground layer (normal speed) */}
-      <EnhancedParallaxLayer speed={1} className="relative z-10" as="div">
+      <div className="relative z-10">
         <div className="container-wide">
           {/* Header */}
-          <div ref={headerRef}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="mb-12 md:mb-16">
               <p className="text-orange-600 text-xs uppercase tracking-editorial-wide mb-4">
                 The Work Speaks
@@ -117,32 +51,56 @@ export function FeaturedLookbook() {
                 </Link>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Asymmetric grid */}
-          <div ref={gridRef} className="grid grid-cols-12 gap-4 md:gap-6">
+          <div className="grid grid-cols-12 gap-4 md:gap-6">
             {/* Large portrait */}
-            <div className="lookbook-item col-span-12 md:col-span-7 md:row-span-2 group relative aspect-[3/4] md:aspect-auto overflow-hidden rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="lookbook-item col-span-12 md:col-span-7 md:row-span-2 group relative aspect-[3/4] overflow-hidden rounded-lg"
+            >
               <LookbookImage item={previewItems[0]} />
-            </div>
+            </motion.div>
 
             {/* Small */}
-            <div className="lookbook-item col-span-6 md:col-span-5 group relative aspect-square overflow-hidden rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="lookbook-item col-span-6 md:col-span-5 group relative aspect-square overflow-hidden rounded-lg"
+            >
               <LookbookImage item={previewItems[1]} />
-            </div>
+            </motion.div>
 
             {/* Medium */}
-            <div className="lookbook-item col-span-6 md:col-span-5 group relative aspect-square overflow-hidden rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="lookbook-item col-span-6 md:col-span-5 group relative aspect-square overflow-hidden rounded-lg"
+            >
               <LookbookImage item={previewItems[2]} />
-            </div>
+            </motion.div>
           </div>
 
           {/* Wide image below */}
-          <div className="lookbook-item mt-4 md:mt-6 group relative aspect-[16/7] overflow-hidden rounded-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="lookbook-item mt-4 md:mt-6 group relative aspect-[16/7] overflow-hidden rounded-lg"
+          >
             <LookbookImage item={previewItems[3]} />
-          </div>
+          </motion.div>
         </div>
-      </EnhancedParallaxLayer>
+      </div>
     </section>
   );
 }
