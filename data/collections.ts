@@ -31,7 +31,7 @@ export const collections: Collection[] = [
     title: 'Ivory Bridal Gown',
     category: 'Bridal Gowns',
     image:
-      'https://images.pexels.com/photos/1721934/pexels-photo-1721934.jpeg?auto=compress&cs=tinysrgb&w=1000',
+      '/images/image_7.jpeg',
     description:
       'A handcrafted ivory bridal gown with intricate lace detailing and a dramatic train, designed for the bride who wants to feel timeless.',
     size: 'small',
@@ -41,7 +41,7 @@ export const collections: Collection[] = [
     title: 'Sunday Elegance',
     category: 'Church Dresses',
     image:
-      'https://images.pexels.com/photos/1689731/pexels-photo-1689731.jpeg?auto=compress&cs=tinysrgb&w=1000',
+      '/images/image_8.jpeg',
     description:
       'A graceful church dress in warm tones, designed for comfort and elegance through every Sunday service.',
     size: 'wide',
@@ -51,7 +51,7 @@ export const collections: Collection[] = [
     title: 'Emerald Kaftan',
     category: 'Kaftans',
     image:
-      'https://images.pexels.com/photos/3752077/pexels-photo-3752077.jpeg?auto=compress&cs=tinysrgb&w=800',
+      '/images/image_2.jpeg',
     description:
       'A flowing emerald kaftan with gold accents, perfect for festive gatherings and cultural celebrations.',
     size: 'medium',
@@ -61,7 +61,7 @@ export const collections: Collection[] = [
     title: 'Statement Evening Gown',
     category: 'Custom Dresses',
     image:
-      'https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=1000',
+      '/images/image_3.jpeg',
     description:
       'A custom evening gown designed from a client inspiration image, featuring a dramatic silhouette and premium finishing.',
     size: 'large',
@@ -71,7 +71,7 @@ export const collections: Collection[] = [
     title: 'Floral Fascinator',
     category: 'Fascinators',
     image:
-      'https://images.pexels.com/photos/2703202/pexels-photo-2703202.jpeg?auto=compress&cs=tinysrgb&w=800',
+      '/images/image_4.jpeg',
     description:
       'A handcrafted fascinator with floral detailing, designed to complete a sophisticated event look.',
     size: 'small',
@@ -81,7 +81,7 @@ export const collections: Collection[] = [
     title: 'Lace Bridal Couture',
     category: 'Bridal Gowns',
     image:
-      'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1000',
+      '/images/image_1.jpeg',
     description:
       'A couture bridal piece with hand-appliqued lace and a fitted bodice, crafted over multiple fittings for the perfect silhouette.',
     size: 'wide',
@@ -91,7 +91,7 @@ export const collections: Collection[] = [
     title: 'Engagement Kente Set',
     category: 'Kente Outfits',
     image:
-      'https://images.pexels.com/photos/1192609/pexels-photo-1192609.jpeg?auto=compress&cs=tinysrgb&w=800',
+      '/images/image_5.jpeg',
     description:
       'A coordinated Kente set for traditional engagement ceremonies, styled with cultural authenticity and modern flair.',
     size: 'medium',
@@ -101,7 +101,7 @@ export const collections: Collection[] = [
     title: 'Ankara Fusion Dress',
     category: 'Custom Dresses',
     image:
-      'https://images.pexels.com/photos/3818956/pexels-photo-3818956.jpeg?auto=compress&cs=tinysrgb&w=1000',
+      '/images/image_6.jpeg',
     description:
       'A fusion dress combining ankara prints with modern tailoring, created as a one-of-a-kind custom piece.',
     size: 'large',
@@ -111,7 +111,7 @@ export const collections: Collection[] = [
     title: 'Embroidered Church Gown',
     category: 'Church Dresses',
     image:
-      'https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=800',
+      '/images/image_7.jpeg',
     description:
       'An embroidered church gown with a flowing silhouette, designed for graceful movement and all-day comfort.',
     size: 'medium',

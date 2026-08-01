@@ -92,7 +92,7 @@ export function FinalCTA() {
       <EnhancedParallaxLayer speed={0.3} className="absolute inset-0" as="div">
         <div ref={bgRef} className="absolute inset-0 parallax-bg">
           <Image
-            src="https://images.pexels.com/photos/3752077/pexels-photo-3752077.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            src="/images/image_1.jpeg"
             alt="Custom fashion by ABL"
             fill
             priority

@@ -39,7 +39,7 @@ export const services: Service[] = [
       'Handcrafted headpieces that complete your look. Our fascinators are designed to turn heads and add that final touch of elegance to any occasion.',
     benefits: ['Custom designs', 'Premium materials', 'Matching accessories', 'Event-ready pieces'],
     image:
-      'https://images.pexels.com/photos/2703202/pexels-photo-2703202.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      '/images/image_2.jpeg',
     featured: true,
   },
   {
@@ -61,7 +61,7 @@ export const services: Service[] = [
       'Comfortable, adorable, and made to last. We create children\'s outfits for birthdays, church, school events, and everyday moments worth remembering.',
     benefits: ['Birthday and event outfits', 'Church wear', 'Matching family sets', 'Comfortable fabrics'],
     image:
-      'https://images.pexels.com/photos/1620763/pexels-photo-1620763.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      '/images/image_3.jpeg',
   },
   {
     id: 'ready-to-wear',
@@ -71,7 +71,7 @@ export const services: Service[] = [
       'Curated collections of ready-to-wear fashion, designed and produced in-house. Premium quality without the wait, for when you need to look stunning now.',
     benefits: ['In-stock collections', 'Seasonal releases', 'Premium quality', 'Immediate availability'],
     image:
-      'https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      '/images/image_4.jpeg',
   },
   {
     id: 'traditional-wear',
@@ -81,7 +81,7 @@ export const services: Service[] = [
       'Celebrating African heritage through every thread. Kente, ankara, and traditional Ghanaian garments designed with cultural pride and modern elegance.',
     benefits: ['Kente outfits', 'Ankara designs', 'Traditional ceremonies', 'Cultural events'],
     image:
-      'https://images.pexels.com/photos/3818956/pexels-photo-3818956.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      '/images/image_5.jpeg',
   },
   {
     id: 'custom-made-outfits',
@@ -91,7 +91,7 @@ export const services: Service[] = [
       'Bring your inspiration, your idea, your vision. We turn it into a garment that fits perfectly and tells your story through fabric and form.',
     benefits: ['Design from inspiration', 'Full creative collaboration', 'Perfect measurements', 'One-of-a-kind pieces'],
     image:
-      'https://images.pexels.com/photos/3752077/pexels-photo-3752077.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      '/images/image_6.jpeg',
   },
 ];
 

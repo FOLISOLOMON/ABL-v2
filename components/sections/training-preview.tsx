@@ -72,7 +72,7 @@ export function TrainingPreview() {
           className="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 hidden lg:block"
         >
           <Image
-            src="https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=800"
+            src="/images/image_8.jpeg"
             alt=""
             fill
             className="object-cover"

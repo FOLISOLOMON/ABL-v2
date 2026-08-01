@@ -177,7 +177,7 @@ export default function TrainingPage() {
             <Reveal>
               <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
                 <Image
-                  src="https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="/images/image_1.jpeg"
                   alt="Fashion training at ABL"
                   fill
                   className="object-cover"
@@ -227,7 +227,7 @@ export default function TrainingPage() {
       <section className="relative py-24 md:py-32 bg-royal-700 text-white overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 hidden lg:block">
           <Image
-            src="https://images.pexels.com/photos/6311626/pexels-photo-6311626.jpeg?auto=compress&cs=tinysrgb&w=800"
+            src="/images/image_2.jpeg"
             alt=""
             fill
             className="object-cover"
