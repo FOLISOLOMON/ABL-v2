@@ -4,7 +4,7 @@
 // 1. Create a new Google Sheet (or open an existing one).
 // 2. Extensions → Apps Script → paste this entire file.
 // 3. Run `setupSheets()` once from the Apps Script editor (it will ask for permissions).
-//    This creates the two tabs with headers automatically.
+//    This creates the tabs with headers automatically.
 // 4. Deploy → New deployment → Web app.
 //    - Execute as: Me
 //    - Who has access: Anyone
@@ -57,10 +57,17 @@ const CONSULTATION_HEADERS = [
   'name',
   'email',
   'phone',
+  'whatsapp',
   'consultation_type',
   'preferred_date',
   'preferred_time',
   'description',
+  'status',
+];
+
+const NEWSLETTER_HEADERS = [
+  'timestamp',
+  'email',
   'status',
 ];
 
@@ -93,6 +100,7 @@ function setupSheets() {
   ensureTab(sheet, 'bookings', BOOKING_HEADERS);
   ensureTab(sheet, 'training_applications', TRAINING_HEADERS);
   ensureTab(sheet, 'consultations', CONSULTATION_HEADERS);
+  ensureTab(sheet, 'newsletter_subscribers', NEWSLETTER_HEADERS);
 }
 
 function isAuthorized(e) {
@@ -159,11 +167,19 @@ function doPost(e) {
         body.data.name || '',
         body.data.email || '',
         body.data.phone || '',
+        body.data.whatsapp || '',
         body.data.consultationType || '',
         body.data.preferredDate || '',
         body.data.preferredTime || '',
         body.data.description || '',
         body.data.status || 'new',
+      ]);
+    } else if (body.type === 'newsletter') {
+      const tab = ensureTab(sheet, 'newsletter_subscribers', NEWSLETTER_HEADERS);
+      tab.appendRow([
+        new Date(),
+        body.data.email || '',
+        body.data.status || 'active',
       ]);
     } else {
       return ContentService.createTextOutput(

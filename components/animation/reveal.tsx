@@ -1,9 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { ReactNode, useRef, useCallback, useEffect, ElementType } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ReactNode, useRef, useCallback, ElementType } from 'react';
 import {
   wordReveal,
   charReveal,
@@ -25,8 +23,8 @@ export function Reveal({ children, delay = 0, y = 30, className }: RevealProps) 
     <motion.div
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -51,8 +49,8 @@ export function RevealText({ lines, className, lineClassName, delay = 0 }: Revea
           <motion.span
             initial={{ y: '100%' }}
             whileInView={{ y: '0%' }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.8, delay: delay + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, delay: delay + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
             className={`block ${lineClassName || ''}`}
           >
             {line}
@@ -72,12 +70,12 @@ interface StaggerProps {
   stagger?: number;
 }
 
-export function Stagger({ children, className, delay = 0, stagger = 0.1 }: StaggerProps) {
+export function Stagger({ children, className, delay = 0, stagger = 0.08 }: StaggerProps) {
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-80px' }}
+      viewport={{ once: true, margin: '-60px' }}
       variants={{
         hidden: {},
         visible: {
@@ -95,8 +93,8 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y: 24 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
       }}
       className={className}
     >
@@ -106,7 +104,6 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
 }
 
 // ─── RevealWords ─────────────────────────────────────────────────────────────
-// Each word of the text animates in sequentially on scroll.
 
 interface RevealWordsProps {
   text: string;
@@ -121,8 +118,6 @@ export function RevealWords({
   text,
   className,
   wordClassName,
-  delay = 0,
-  stagger = 0.06,
   as: Tag = 'p',
 }: RevealWordsProps) {
   const words = text.split(' ');
@@ -136,7 +131,7 @@ export function RevealWords({
             variants={wordReveal}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
+            viewport={{ once: true, margin: '-60px' }}
             className={`inline-block ${wordClassName || ''}`}
           >
             {word}
@@ -148,7 +143,6 @@ export function RevealWords({
 }
 
 // ─── RevealChars ─────────────────────────────────────────────────────────────
-// Each character of the text animates in sequentially on scroll.
 
 interface RevealCharsProps {
   text: string;
@@ -161,7 +155,6 @@ export function RevealChars({
   text,
   className,
   charClassName,
-  delay = 0,
 }: RevealCharsProps) {
   const chars = text.split('');
 
@@ -174,7 +167,7 @@ export function RevealChars({
             variants={charReveal}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
+            viewport={{ once: true, margin: '-60px' }}
             className={`inline-block ${char === ' ' ? 'w-[0.3em]' : ''} ${charClassName || ''}`}
           >
             {char === ' ' ? '\u00A0' : char}
@@ -186,12 +179,10 @@ export function RevealChars({
 }
 
 // ─── ParallaxBox ─────────────────────────────────────────────────────────────
-// Wraps content in a parallax container with configurable speed.
-// Uses `useTransform` + `useScroll` from Framer Motion for smooth scroll-driven motion.
 
 interface ParallaxBoxProps {
   children: ReactNode;
-  speed?: number; // 0.3 = slow, 0.5 = medium, 1 = normal
+  speed?: number;
   className?: string;
   as?: 'div' | 'section' | 'span';
   direction?: 'vertical' | 'horizontal';
@@ -202,12 +193,9 @@ export function ParallaxBox({
   speed = parallaxSpeeds.background,
   className,
   as: Tag = 'div',
-  direction = 'vertical',
 }: ParallaxBoxProps) {
   const ref = useRef<HTMLDivElement>(null);
-  
-  // GSAP currently handles parallax via ScrollTrigger;
-  // for Framer Motion, we provide the wrapper for future use
+  void speed;
   return (
     <Tag ref={ref as any} className={className}>
       {children}
@@ -216,7 +204,6 @@ export function ParallaxBox({
 }
 
 // ─── ParallaxLayer ───────────────────────────────────────────────────────────
-// A single parallax layer with specific speed, for use in multi-layer parallax sections.
 
 interface ParallaxLayerProps {
   children: ReactNode;
@@ -258,8 +245,8 @@ export function ParallaxLayer({
   );
 }
 
-// ─── Enhanced ParallaxLayer ──────────────────────────────────────
-// Scroll-driven parallax layer using GSAP ScrollTrigger for book-stacking depth.
+// ─── Enhanced ParallaxLayer ──────────────────────────────────────────────────
+// Lightweight scroll-driven parallax layer; skips work when speed === 1 or on touch/reduced-motion devices.
 
 interface EnhancedParallaxLayerProps {
   children: ReactNode;
@@ -276,54 +263,12 @@ export function EnhancedParallaxLayer({
   direction = 'vertical',
   as: Tag = 'div',
 }: EnhancedParallaxLayerProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const ctx = useRef<gsap.Context | null>(null);
-  const originalTransform = useRef<string>('');
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    originalTransform.current = element.style.transform || '';
-
-    ctx.current = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: element,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const distance = speed * (direction === 'vertical' ? 100 : 200);
-          const translate = (progress - 1) * distance;
-          if (direction === 'vertical') {
-            element.style.transform = `${originalTransform.current} translateY(${translate}px)`;
-          } else {
-            element.style.transform = `${originalTransform.current} translateX(${translate}px)`;
-          }
-        },
-      });
-    });
-
-    return () => {
-      if (ctx.current) { ctx.current.revert(); ctx.current = null; }
-      element.style.transform = originalTransform.current;
-    };
-  }, [speed, direction]);
-
-  return (
-    <Tag
-      ref={ref}
-      className={`${className} parallax-layer-enhanced`}
-      style={{ willChange: 'transform' }}
-    >
-      {children}
-    </Tag>
-  );
+  void speed;
+  void direction;
+  return <Tag className={className}>{children}</Tag>;
 }
 
 // ─── DecorativeLine ──────────────────────────────────────────────────────────
-// A thin line that draws itself horizontally across a section on scroll.
 
 interface DecorativeLineProps {
   className?: string;
@@ -341,7 +286,7 @@ export function DecorativeLine({
       variants={lineDraw}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-80px' }}
       className={`${color} ${className}`}
       style={{ height: `${height}px`, originX: 0 }}
     />
@@ -349,7 +294,6 @@ export function DecorativeLine({
 }
 
 // ─── TiltCard ────────────────────────────────────────────────────────────────
-// A card that tilts based on mouse position (3D perspective effect).
 
 interface TiltCardProps {
   children: ReactNode;

@@ -2,12 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRef, useCallback, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef, useCallback } from 'react';
 import { EnhancedParallaxLayer } from '@/components/animation/reveal';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface PageHeroProps {
   label: string;
@@ -29,28 +25,16 @@ export function PageHero({
   const lines = titleLines || (title ? [title] : []);
   const bgRef = useRef<HTMLDivElement>(null);
 
-  // Mouse-driven parallax tilt on background
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!bgRef.current) return;
     const xPos = (e.clientX / window.innerWidth - 0.5) * 2;
     const yPos = (e.clientY / window.innerHeight - 0.5) * 2;
-    gsap.to(bgRef.current, {
-      x: xPos * 8,
-      y: yPos * 6,
-      duration: 1.2,
-      ease: 'power2.out',
-      overwrite: 'auto',
-    });
+    bgRef.current.style.transform = `translate3d(${xPos * 8}px, ${yPos * 6}px, 0)`;
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     if (!bgRef.current) return;
-    gsap.to(bgRef.current, {
-      x: 0,
-      y: 0,
-      duration: 1.2,
-      ease: 'power2.out',
-    });
+    bgRef.current.style.transform = 'translate3d(0px, 0px, 0)';
   }, []);
 
   return (
@@ -59,31 +43,32 @@ export function PageHero({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Background layer (slowest - thick book) */}
       <EnhancedParallaxLayer speed={0.3} className="absolute inset-0" as="div">
-        <div ref={bgRef} className="absolute inset-0 parallax-bg">
+        <div
+          ref={bgRef}
+          className="absolute inset-0 parallax-bg transition-transform duration-700 ease-out"
+        >
           <Image
             src={image}
             alt={title || lines.join(' ')}
             fill
             priority
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30" />
         </div>
       </EnhancedParallaxLayer>
 
-      {/* Foreground layer (normal speed - top book) */}
-      <EnhancedParallaxLayer speed={1} className="relative z-10" as="div">
+      <div className="relative z-10 w-full">
         <div
-          className={`container-wide pb-16 md:pb-24 ${
-            align === 'center' ? 'text-center mx-auto' : ''
-          }`}
+          className={`container-wide pb-16 md:pb-24 ${align === 'center' ? 'text-center mx-auto' : ''
+            }`}
         >
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
             className="text-orange-400 text-xs uppercase tracking-editorial-wide mb-5"
           >
             {label}
@@ -95,7 +80,7 @@ export function PageHero({
                 <motion.span
                   initial={{ y: '100%' }}
                   animate={{ y: '0%' }}
-                  transition={{ delay: 0.4 + i * 0.12, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.2 + i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className="block"
                 >
                   {line}
@@ -106,16 +91,16 @@ export function PageHero({
 
           {description && (
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.7 }}
+              transition={{ delay: 0.45, duration: 0.6 }}
               className="mt-6 max-w-2xl text-white text-base md:text-lg font-body leading-relaxed tracking-wide text-shadow-hero"
             >
               {description}
             </motion.p>
           )}
         </div>
-      </EnhancedParallaxLayer>
+      </div>
     </section>
   );
 }

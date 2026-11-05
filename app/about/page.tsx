@@ -42,13 +42,20 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-5">
               <Reveal>
-                <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
-                   <Image
-                     src="/images/about-2.jpg"
-                     alt="ABL Fashion craftsmanship"
-                     fill
-                     className="object-cover"
-                   />
+                <div className="group">
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-none bg-charcoal/5 ring-1 ring-inset ring-charcoal/15">
+                    <Image
+                      src="/images/about-2.jpg"
+                      alt="ABL Fashion craftsmanship"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 42vw"
+                      className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  <div className="pt-3 pb-2.5 border-b border-charcoal/15 flex items-center justify-between text-[10px] uppercase tracking-editorial-wide text-charcoal/50">
+                    <span>Archive 01 — Kasoa Studio</span>
+                    <span className="text-orange-600 font-semibold">Est. 2016</span>
+                  </div>
                 </div>
               </Reveal>
             </div>
@@ -109,7 +116,7 @@ export default function AboutPage() {
                 </p>
               </Reveal>
               <Reveal delay={0.4}>
-                <div className="mt-8 flex flex-col gap-3 text-white/60 text-sm font-body">
+                <div className="mt-8 flex flex-col gap-3 text-white/60 text-sm font-body border-t border-white/10 pt-6">
                   <p>
                     <span className="text-orange-500 font-semibold">Our Mission: </span>
                     {siteConfig.mission}.
@@ -122,13 +129,20 @@ export default function AboutPage() {
               </Reveal>
             </div>
             <Reveal delay={0.2}>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-                 <Image
-                   src="/images/about-3.jpg"
-                   alt="ABL Fashion philosophy"
-                   fill
-                   className="object-cover"
-                 />
+              <div className="group">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-none bg-white/5 ring-1 ring-inset ring-white/15">
+                  <Image
+                    src="/images/about-3.jpg"
+                    alt="ABL Fashion philosophy"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div className="pt-3 pb-2.5 border-b border-white/15 flex items-center justify-between text-[10px] uppercase tracking-editorial-wide text-white/50">
+                  <span>Archive 02 — Bespoke Tailoring</span>
+                  <span className="text-orange-500 font-semibold">Couture Standard</span>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -151,7 +165,7 @@ export default function AboutPage() {
 
           <div className="relative max-w-3xl mx-auto">
             {/* Vertical line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-charcoal/10 md:-translate-x-1/2" />
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-charcoal/15 md:-translate-x-1/2" />
 
             {milestones.map((milestone, i) => (
               <Reveal key={milestone.year} delay={i * 0.1}>
@@ -161,8 +175,8 @@ export default function AboutPage() {
                   }`}
                 >
                   <div className="md:w-1/2 md:px-8 pl-12 md:pl-0">
-                    <div className="bg-white border border-charcoal/10 rounded-lg p-6 md:p-8 shadow-sm">
-                      <span className="font-display text-orange-600 text-3xl md:text-4xl font-bold block mb-2">
+                    <div className="bg-white border border-charcoal/15 rounded-none p-6 md:p-8 shadow-sm">
+                      <span className="font-display italic text-orange-600 text-3xl md:text-4xl font-medium block mb-2">
                         {milestone.year}
                       </span>
                       <h3 className="font-display text-xl font-medium text-charcoal mb-2">
@@ -202,8 +216,8 @@ export default function AboutPage() {
               const Icon = iconMap[value.icon] || Sparkles;
               return (
                 <Reveal key={value.title} delay={i * 0.1}>
-                  <div className="group bg-white border border-charcoal/10 rounded-lg p-8 h-full hover:border-orange-500/30 hover:shadow-lg transition-all duration-300">
-                    <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-5 group-hover:bg-orange-500 transition-colors duration-300">
+                  <div className="group bg-white border border-charcoal/15 rounded-none p-8 h-full hover:border-orange-500/40 hover:shadow-lg transition-all duration-300">
+                    <div className="w-12 h-12 rounded-none bg-orange-50 border border-orange-500/20 flex items-center justify-center mb-5 group-hover:bg-orange-500 transition-colors duration-300">
                       <Icon className="w-5 h-5 text-orange-600 group-hover:text-white transition-colors duration-300" />
                     </div>
                     <h3 className="font-display text-xl font-medium text-charcoal mb-3">

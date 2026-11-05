@@ -1,13 +1,18 @@
 export async function sendToSheet(
-  type: 'contact' | 'booking' | 'training' | 'consultation',
+  type: 'contact' | 'booking' | 'training' | 'consultation' | 'newsletter',
   data: Record<string, string>,
   retries = 3,
   backoff = 500
 ) {
   const url = process.env.GOOGLE_APPS_SCRIPT_URL;
+  const token = process.env.GOOGLE_SHEETS_TOKEN || '';
 
   if (!url) {
-    throw new Error('GOOGLE_APPS_SCRIPT_URL is not configured');
+    console.warn(
+      `[Google Sheets] GOOGLE_APPS_SCRIPT_URL is not configured. Logging ${type} submission locally:`,
+      data
+    );
+    return { success: true, fallback: true };
   }
 
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -17,7 +22,7 @@ export async function sendToSheet(
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ type, data }),
+        body: JSON.stringify({ type, data, ...(token ? { token } : {}) }),
       });
 
       if (!response.ok) {
@@ -30,7 +35,7 @@ export async function sendToSheet(
 
         const message = result.error || `HTTP ${response.status}`;
         throw new Error(
-          `${message} — check GOOGLE_APPS_SCRIPT_URL (${url}) and ensure the Apps Script is deployed as a Web App with "Anyone" access.`
+          `${message} — check GOOGLE_APPS_SCRIPT_URL and ensure the Apps Script is deployed as a Web App with "Anyone" access.`
         );
       }
 

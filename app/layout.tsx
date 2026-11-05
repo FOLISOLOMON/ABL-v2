@@ -11,14 +11,15 @@ const bodoniModa = Bodoni_Moda({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '700'],
+  adjustFontFallback: false,
 });
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
@@ -59,8 +60,8 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: '/images/logo/logo abl main.png',
-    apple: '/images/logo/logo abl main.png',
+    icon: '/images/logo/favicon.png',
+    apple: '/images/logo/apple-touch-icon.png',
   },
 };
 

@@ -1,21 +1,19 @@
-import re
-
 # 1. book/page.tsx
 path = r'C:\Users\Solomon\Desktop\ABL v2\app\book\page.tsx'
 with open(path, 'r', encoding='utf-8') as f:
     content = f.read()
-content = content.replace('  " Mens Wear\,' + chr(10), '')
+content = content.replace('  "Mens Wear",\n', '')
 with open(path, 'w', encoding='utf-8') as f:
- f.write(content)
+    f.write(content)
 
 # 2. data/services.ts
 path = r'C:\Users\Solomon\Desktop\ABL v2\data\services.ts'
 with open(path, 'r', encoding='utf-8') as f:
- content = f.read()
+    content = f.read()
 old = ''' {
  id: 'mens-wear',
  number: '03',
- title: \Mens Wear\,
+ title: "Mens Wear",
  description:
  'Sharp, tailored, and confident. From agbada to modern suits, we craft menswear that commands presence and reflects personality.',
  benefits: ['Agbada and traditional wear', 'Tailored suits', 'Kaftans and tunics', 'Custom shirts'],
@@ -26,16 +24,16 @@ old = ''' {
 '''
 content = content.replace(old, '')
 with open(path, 'w', encoding='utf-8') as f:
- f.write(content)
+    f.write(content)
 
 # 3. data/collections.ts
 path = r'C:\Users\Solomon\Desktop\ABL v2\data\collections.ts'
 with open(path, 'r', encoding='utf-8') as f:
- content = f.read()
+    content = f.read()
 old = ''' {
  id: 'mens-suit-2',
  title: 'Modern Slim Suit',
- category: \Mens Suits\,
+ category: "Mens Suits",
  image:
  'https://images.pexels.com/photos/2897531/pexels-photo-2897531.jpeg?auto=compress&cs=tinysrgb&w=800',
  description:
@@ -55,8 +53,8 @@ new = ''' {
  },
 '''
 content = content.replace(old, new)
-content = content.replace(''Men''s Suits'', 'Traditional Wear')
+content = content.replace("Men's Suits", 'Traditional Wear')
 with open(path, 'w', encoding='utf-8') as f:
- f.write(content)
+    f.write(content)
 
 print('Done')

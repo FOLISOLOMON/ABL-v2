@@ -40,18 +40,20 @@ export async function POST(request: Request) {
     });
 
     let emailSent = false;
-    try {
-      const emailResult = await sendConsultationConfirmationEmail({
-        name,
-        email: email || '',
-        referenceNumber,
-        consultationType: consultationType || 'General Consultation',
-        preferredDate: preferredDate || '',
-        preferredTime: preferredTime || '',
-      });
-      emailSent = emailResult.success;
-    } catch (emailError) {
-      console.error('Email sending failed (non-blocking):', emailError);
+    if (email && email.trim()) {
+      try {
+        const emailResult = await sendConsultationConfirmationEmail({
+          name,
+          email: email.trim(),
+          referenceNumber,
+          consultationType: consultationType || 'General Consultation',
+          preferredDate: preferredDate || '',
+          preferredTime: preferredTime || '',
+        });
+        emailSent = emailResult.success;
+      } catch (emailError) {
+        console.error('Email sending failed (non-blocking):', emailError);
+      }
     }
 
     return NextResponse.json({

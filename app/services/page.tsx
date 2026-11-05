@@ -10,11 +10,11 @@ import { Check, ArrowRight } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Services',
   description:
-     'Explore ABL Fashion services: custom sewing, bridal wear, menswear, womenswear, childrenswear, fascinators, ready-to-wear, traditional wear, and custom-made outfits.',
+    'Explore ABL Fashion services: custom sewing, bridal wear, womenswear, childrenswear, fascinators, ready-to-wear, traditional wear, and custom-made outfits.',
   openGraph: {
     title: 'Services | ABL Fashion',
     description:
-      'Explore ABL Fashion services: custom sewing, bridal wear, menswear, womenswear, and more.',
+      'Explore ABL Fashion services: custom sewing, bridal wear, womenswear, traditional wear, and more.',
     images: ['/images/hero.jpg'],
   },
 };
@@ -35,18 +35,18 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Side nav */}
             <aside className="hidden lg:block lg:col-span-3">
-              <div className="sticky top-28">
-                <p className="text-xs uppercase tracking-editorial text-charcoal/40 mb-5">
-                  Service Index
+              <div className="sticky top-28 border-l border-charcoal/15 pl-6">
+                <p className="text-[10px] uppercase tracking-editorial-wide text-orange-600 font-semibold mb-5">
+                  Atelier Service Index
                 </p>
-                <nav className="flex flex-col gap-1">
+                <nav className="flex flex-col gap-1.5">
                   {services.map((service) => (
                     <Link
                       key={service.id}
                       href={`#${service.id}`}
-                      className="group flex items-baseline gap-3 py-2 text-sm text-charcoal/60 hover:text-orange-600 transition-colors"
+                      className="group flex items-baseline gap-3 py-2 text-sm text-charcoal/60 hover:text-orange-600 transition-colors border-b border-charcoal/5"
                     >
-                      <span className="font-display text-xs text-orange-500/60 font-bold">
+                      <span className="font-display italic text-xs text-orange-600 font-medium">
                         {service.number}
                       </span>
                       <span className="link-underline">{service.title}</span>
@@ -100,27 +100,33 @@ function ServiceSection({
     <div
       id={service.id}
       className={`scroll-mt-28 mb-20 md:mb-28 ${
-        index !== services.length - 1 ? 'border-b border-charcoal/10 pb-20 md:pb-28' : ''
+        index !== services.length - 1 ? 'border-b border-charcoal/15 pb-20 md:pb-28' : ''
       }`}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-        {/* Image */}
+        {/* Sharp Editorial Image + Museum Caption Bar */}
         <Reveal className={isImageLeft ? 'md:order-1' : 'md:order-2'}>
-          <div className="group relative aspect-[3/4] overflow-hidden rounded-lg">
-            <Image
-              src={service.image}
-              alt={service.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+          <div className="group">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-none bg-charcoal/5 ring-1 ring-inset ring-charcoal/15">
+              <Image
+                src={service.image}
+                alt={service.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+              />
+            </div>
+            <div className="pt-3 pb-2.5 border-b border-charcoal/15 flex items-center justify-between text-[10px] uppercase tracking-editorial-wide text-charcoal/50">
+              <span>Plate {service.number} — {service.title}</span>
+              <span className="text-orange-600 font-semibold">Bespoke Atelier</span>
+            </div>
           </div>
         </Reveal>
 
         {/* Text */}
         <div className={isImageLeft ? 'md:order-2' : 'md:order-1'}>
           <Reveal>
-            <span className="font-display text-orange-600/50 text-6xl md:text-7xl font-bold block mb-4">
+            <span className="font-display italic text-orange-600/70 text-5xl md:text-6xl font-medium block mb-4">
               {service.number}
             </span>
           </Reveal>
@@ -135,9 +141,9 @@ function ServiceSection({
             </p>
           </Reveal>
           <Reveal delay={0.2}>
-            <ul className="space-y-2 mb-8">
+            <ul className="space-y-2.5 mb-8 border-y border-charcoal/10 py-5">
               {service.benefits.map((benefit) => (
-                <li key={benefit} className="flex items-center gap-2 text-sm text-charcoal/70">
+                <li key={benefit} className="flex items-center gap-3 text-sm text-charcoal/75">
                   <Check className="w-4 h-4 text-orange-500 shrink-0" />
                   {benefit}
                 </li>
@@ -147,7 +153,7 @@ function ServiceSection({
           <Reveal delay={0.25}>
             <Link
               href="/book"
-              className="group inline-flex items-center gap-2 text-sm uppercase tracking-editorial font-semibold text-charcoal hover:text-orange-600 transition-colors"
+              className="group inline-flex items-center gap-2 text-xs uppercase tracking-editorial font-semibold text-charcoal hover:text-orange-600 transition-colors"
             >
               Book or Enquire
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />

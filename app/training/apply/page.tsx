@@ -1,245 +1,258 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageHero } from '@/components/sections/page-hero';
 import { Button } from '@/components/ui/button-link';
 import { siteConfig } from '@/data/site';
 import { trainingPrograms } from '@/data/training';
 import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  User,
   CheckCircle2,
   Loader2,
   AlertCircle,
   Copy,
-  Check,
-  ArrowRight,
-  MessageCircle,
+  MapPin,
+  Clock,
+  CreditCard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  trainingProgramme: string;
-}
+const steps = [
+  { id: 1, label: 'Select Program', icon: GraduationCap },
+  { id: 2, label: 'Your Details', icon: User },
+];
 
 export default function TrainingApplyPage() {
-  const [formData, setFormData] = useState<FormData>({
+  const [step, setStep] = useState(1);
+  const [selectedProgram, setSelectedProgram] = useState('');
+  const [form, setForm] = useState({
     name: '',
     email: '',
     phone: '',
-    trainingProgramme: '',
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [referenceNumber, setReferenceNumber] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const updateField = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: '' }));
+  const canProceed = () => {
+    if (step === 1) return selectedProgram !== '';
+    if (step === 2) {
+      return (
+        form.name.trim() !== '' &&
+        form.email.trim() !== '' &&
+        form.phone.trim() !== '' &&
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+      );
+    }
+    return false;
   };
 
-  const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Please enter your full name';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Please enter your email address';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    if (!formData.phone.trim()) newErrors.phone = 'Please enter your phone number';
-    if (!formData.trainingProgramme) newErrors.trainingProgramme = 'Please select a training programme';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const selectedProgramData = trainingPrograms.find((p) => p.id === selectedProgram);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!canProceed()) return;
 
-    setStatus('loading');
+    setSubmitting(true);
+    setError('');
+
     try {
-      const response = await fetch('/api/training', {
+      const res = await fetch('/api/training', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          trainingProgramme: `${selectedProgramData?.duration} — ${selectedProgramData?.title}`,
+        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Something went wrong. Please try again.');
       }
 
-      setReferenceNumber(data.referenceNumber);
-      setEmailSent(data.emailSent || false);
-      setStatus('success');
+      const data = await res.json();
+      setReferenceNumber(data.referenceNumber || '');
+      setSubmitted(true);
     } catch (err) {
-      console.error('Training application error:', err);
-      setStatus('error');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to submit your application. Please try again or contact us on WhatsApp.'
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleCopyReference = () => {
-    if (referenceNumber) {
-      navigator.clipboard.writeText(referenceNumber);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+  const copyReferenceNumber = () => {
+    navigator.clipboard.writeText(referenceNumber);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const resetForm = () => {
-    setStatus('idle');
-    setFormData({ name: '', email: '', phone: '', trainingProgramme: '' });
-    setReferenceNumber('');
-    setEmailSent(false);
-    setCopied(false);
-  };
-
-  // Success screen
-  if (status === 'success') {
+  if (submitted) {
     return (
       <>
         <PageHero
-          label="Training Application"
-          title="Application Submitted."
-          image="/images/about-1.jpg"
+          label="Application Submitted"
+          title="Thank you for applying!"
+          description="Your training application has been received. Please follow the steps below to complete your registration."
+          image="/images/about-2.jpg"
         />
-        <section className="py-24 md:py-32 bg-ivory min-h-[50vh] flex items-center">
-          <div className="container-narrow text-center">
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-8"
-            >
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="font-display text-4xl md:text-5xl font-medium text-charcoal mb-4"
-            >
-              Your training application has been submitted successfully.
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-charcoal/60 text-lg max-w-lg mx-auto mb-8"
-            >
-              Please save your application reference number. You will need it for all future correspondence.
-            </motion.p>
-
-            {/* Reference Number Display */}
+        <section className="py-24 md:py-32 bg-ivory">
+          <div className="container-narrow">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="bg-white border border-charcoal/10 rounded-2xl p-8 max-w-md mx-auto mb-10 shadow-sm"
+              transition={{ duration: 0.6 }}
+              className="bg-white border border-charcoal/15 p-8 md:p-14 shadow-[0_24px_60px_-20px_rgba(26,26,26,0.08)]"
             >
-              <p className="text-xs uppercase tracking-editorial text-charcoal/40 mb-3">
-                Application Reference Number
-              </p>
-              <div className="flex items-center justify-center gap-3">
-                <span className="font-display text-3xl md:text-4xl font-bold text-orange-600 tracking-wider">
-                  {referenceNumber}
+              {/* Dossier Header */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-6 mb-8 border-b border-charcoal/10">
+                <span className="text-[10px] uppercase tracking-editorial-wide text-orange-600 font-semibold">
+                  ABL Academy Dossier — Admissions Record
                 </span>
-                <button
-                  onClick={handleCopyReference}
-                  className="p-2 rounded-lg hover:bg-charcoal/5 transition-colors"
-                  aria-label="Copy reference number"
-                >
-                  {copied ? (
-                    <Check className="w-5 h-5 text-green-600" />
-                  ) : (
-                    <Copy className="w-5 h-5 text-charcoal/40 hover:text-charcoal" />
-                  )}
-                </button>
+                <span className="text-[10px] uppercase tracking-editorial text-charcoal/45">
+                  Status: Awaiting Office Visit
+                </span>
               </div>
-            </motion.div>
 
-            {/* Next Steps */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="bg-charcoal text-white rounded-2xl p-8 max-w-lg mx-auto mb-10 text-left"
-            >
-              <h3 className="font-display text-xl font-medium mb-4 text-orange-400">
-                Next Steps
-              </h3>
-              <ol className="space-y-3">
-                {[
-                  'Visit our office to complete the official registration process',
-                  'Make payment at the office',
-                  'Bring your reference number: ' + referenceNumber,
-                ].map((step, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-white/80">
-                    <span className="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-orange-400 text-xs font-bold">{i + 1}</span>
-                    </span>
-                    {step}
-                  </li>
-                ))}
-              </ol>
-              <div className="mt-6 pt-4 border-t border-white/10">
-                <p className="text-xs text-white/50">
-                  <strong className="text-white/80">Our Office:</strong> Kasoa, Adam Nana Bus Stop, off Obom Road
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/25 flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="w-8 h-8 text-orange-600" />
+                </div>
+                <h2 className="font-display text-2xl md:text-3xl font-medium mb-3">
+                  Application Registered
+                </h2>
+                <p className="text-warm-gray text-sm max-w-md mx-auto">
+                  A confirmation email with these details has been sent to{' '}
+                  <strong className="text-charcoal">{form.email}</strong>.
                 </p>
               </div>
-            </motion.div>
 
-            {/* Email status */}
-            {emailSent && (
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
-                className="text-sm text-green-600 mb-6"
-              >
-                A confirmation email has been sent to {formData.email}.
-              </motion.p>
-            )}
+              {/* Reference Number Box */}
+              <div className="bg-charcoal text-white p-6 md:p-8 text-center mb-8 border border-charcoal">
+                <p className="text-[10px] uppercase tracking-editorial-wide text-orange-400 mb-2">
+                  Your Reference Number
+                </p>
+                <div className="flex items-center justify-center gap-3">
+                  <p className="font-mono text-2xl md:text-3xl font-bold tracking-wider">
+                    {referenceNumber}
+                  </p>
+                  <button
+                    onClick={copyReferenceNumber}
+                    className="p-2 bg-white/10 hover:bg-white/20 transition-colors"
+                    title="Copy reference number"
+                  >
+                    {copied ? (
+                      <Check className="w-4 h-4 text-orange-400" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-white/70" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-white/50 text-xs mt-2">
+                  Save this number — you will need it when visiting our office
+                </p>
+              </div>
 
-            {!emailSent && (
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
-                className="text-sm text-charcoal/50 mb-6"
-              >
-                Your application was saved successfully. Please save your reference number above.
-              </motion.p>
-            )}
+              {/* Application Summary */}
+              <div className="bg-ivory/70 border border-charcoal/10 p-6 mb-8 space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-warm-gray">Applicant</span>
+                  <span className="font-medium text-charcoal">{form.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-warm-gray">Email</span>
+                  <span className="font-medium text-charcoal">{form.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-warm-gray">Phone</span>
+                  <span className="font-medium text-charcoal">{form.phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-warm-gray">Programme</span>
+                  <span className="font-medium text-charcoal">
+                    {selectedProgramData?.duration} — {selectedProgramData?.title}
+                  </span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-charcoal/10">
+                  <span className="text-warm-gray">Status</span>
+                  <span className="text-orange-600 font-semibold text-xs uppercase tracking-editorial">
+                    Awaiting Office Visit
+                  </span>
+                </div>
+              </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <a
-                href={siteConfig.whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-xs uppercase tracking-editorial font-semibold rounded-full transition-all duration-300 hover:scale-[1.03] justify-center"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Chat on WhatsApp Now
-              </a>
-              <button
-                onClick={resetForm}
-                className="group inline-flex items-center gap-2 border border-charcoal/20 text-charcoal hover:bg-charcoal/5 px-8 py-4 text-xs uppercase tracking-editorial font-semibold rounded-full transition-all duration-300 justify-center"
-              >
-                Submit Another Application
-              </button>
+              {/* Next Steps */}
+              <div className="border-l-2 border-orange-500 bg-orange-500/5 p-6 mb-8">
+                <h3 className="font-display text-lg font-medium text-charcoal mb-4">
+                  Next Steps to Complete Your Registration
+                </h3>
+                <div className="space-y-4 text-sm text-warm-gray">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-charcoal">1. Visit Our Office</p>
+                      <p>{siteConfig.location.full}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-charcoal">2. Present Your Reference Number</p>
+                      <p>
+                        Show your reference number (<strong className="text-charcoal">{referenceNumber}</strong>) at the front desk.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CreditCard className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-charcoal">3. Pay the Application Form Fee</p>
+                      <p>
+                        Pay the <strong className="text-charcoal">GHS 150</strong> application form fee to collect your physical form and finalize enrollment.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap justify-center gap-4">
+                <a
+                  href={`https://wa.me/233548883475?text=${encodeURIComponent(
+                    `Hello ABL Fashion, I have applied for the ${selectedProgramData?.duration} (${selectedProgramData?.title}) training programme. My reference number is ${referenceNumber}.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-orange-500 text-white text-xs uppercase tracking-editorial font-semibold hover:bg-orange-600 transition-colors"
+                >
+                  Confirm via WhatsApp
+                </a>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setStep(1);
+                    setSelectedProgram('');
+                    setForm({ name: '', email: '', phone: '' });
+                    setReferenceNumber('');
+                  }}
+                >
+                  New Application
+                </Button>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -250,143 +263,280 @@ export default function TrainingApplyPage() {
   return (
     <>
       <PageHero
-        label="ABL Fashion Training Academy"
-        title="Apply for Training."
-        description="Submit your application online, then visit our office to complete registration and payment."
-        image="/images/about-1.jpg"
+        label="Training Application"
+        title="Begin your fashion journey."
+        description="Apply for a training programme at ABL Fashion Training Academy. Select your preferred duration and enter your details to get started."
+        image="/images/about-2.jpg"
       />
 
-      <section className="pt-16 pb-32 md:pt-24 md:pb-40 bg-ivory border-b border-charcoal/10">
-        <div className="container-wide max-w-2xl">
-          <div className="bg-white border border-charcoal/10 rounded-2xl p-6 md:p-10 shadow-sm">
-            <div className="mb-8">
-              <h2 className="font-display text-2xl md:text-3xl font-medium text-charcoal mb-2">
-                Start Your Fashion Journey
-              </h2>
-              <p className="text-charcoal/50 text-sm">
-                Complete the form below to apply for a training programme. After submitting, visit our office to finalize your enrollment.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Full Name */}
-              <FormField
-                label="Full Name"
-                required
-                value={formData.name}
-                onChange={(v) => updateField('name', v)}
-                error={errors.name}
-                placeholder="Your full name"
-              />
-
-              {/* Email */}
-              <FormField
-                label="Email Address"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(v) => updateField('email', v)}
-                error={errors.email}
-                placeholder="your@email.com"
-              />
-
-              {/* Phone */}
-              <FormField
-                label="Phone Number"
-                required
-                value={formData.phone}
-                onChange={(v) => updateField('phone', v)}
-                error={errors.phone}
-                placeholder="05XXXXXXXX"
-              />
-
-              {/* Training Programme */}
-              <div>
-                <label className="block text-xs uppercase tracking-editorial font-body font-medium text-charcoal/70 mb-3">
-                  Training Programme <span className="text-orange-500">*</span>
-                </label>
-                <div className="space-y-2">
-                  {trainingPrograms.map((program) => (
-                    <button
-                      key={program.id}
-                      type="button"
-                      onClick={() => updateField('trainingProgramme', program.title)}
+      <section className="py-16 md:py-24 bg-ivory">
+        <div className="container-narrow">
+          {/* Editorial Dossier Stepper */}
+          <div className="grid grid-cols-2 border border-charcoal/15 bg-white mb-12">
+            {steps.map((s) => {
+              const active = step === s.id;
+              const completed = step > s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => {
+                    if (s.id < step) setStep(s.id);
+                  }}
+                  className={cn(
+                    'flex items-center justify-between px-6 py-4 text-left border-r last:border-r-0 border-charcoal/15 transition-colors duration-300',
+                    active && 'bg-charcoal text-white',
+                    completed && 'bg-orange-500/10 text-charcoal cursor-pointer hover:bg-orange-500/15',
+                    !active && !completed && 'bg-white text-warm-gray cursor-default'
+                  )}
+                >
+                  <div>
+                    <span
                       className={cn(
-                        'w-full text-left px-4 py-3.5 text-sm rounded-lg border transition-all duration-300',
-                        formData.trainingProgramme === program.title
-                          ? 'bg-charcoal text-white border-charcoal'
-                          : 'bg-ivory/50 text-charcoal/70 border-charcoal/15 hover:border-charcoal/30'
+                        'block text-[10px] uppercase tracking-editorial-wide mb-0.5',
+                        active ? 'text-orange-400' : completed ? 'text-orange-600 font-semibold' : 'text-warm-gray/60'
                       )}
                     >
-                      <span className="font-medium">{program.duration}</span>
-                      <span className="text-xs ml-2 opacity-60">— {program.title}</span>
-                    </button>
-                  ))}
-                </div>
-                {errors.trainingProgramme && (
-                  <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> {errors.trainingProgramme}
-                  </p>
-                )}
-              </div>
+                      Step 0{s.id}
+                    </span>
+                    <span className="font-display text-sm md:text-base font-medium">
+                      {s.label}
+                    </span>
+                  </div>
+                  <div
+                    className={cn(
+                      'w-7 h-7 flex items-center justify-center border text-xs',
+                      active && 'border-orange-500 bg-orange-500 text-white',
+                      completed && 'border-orange-500/40 bg-orange-500/15 text-orange-600',
+                      !active && !completed && 'border-charcoal/15 text-warm-gray/60'
+                    )}
+                  >
+                    {completed ? <Check className="w-3.5 h-3.5" /> : `0${s.id}`}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-              {/* Error message */}
-              {status === 'error' && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+          {/* Info Banner */}
+          <div className="bg-white border border-charcoal/15 p-5 mb-10 flex items-start gap-3">
+            <CreditCard className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+            <div className="text-xs text-warm-gray leading-relaxed">
+              <strong className="text-charcoal uppercase tracking-editorial">How it works:</strong> Submit your application online to receive a unique reference number. Then visit our office in Kasoa with your reference number and pay the{' '}
+              <strong className="text-charcoal">GHS 150 application form fee</strong> to complete your registration.
+            </div>
+          </div>
+
+          {/* Form Content inside Dossier Sheet */}
+          <div className="bg-white border border-charcoal/15 p-6 sm:p-10 md:p-14 shadow-[0_24px_60px_-20px_rgba(26,26,26,0.06)]">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-5 mb-8 border-b border-charcoal/10">
+              <span className="text-[10px] uppercase tracking-editorial-wide text-orange-600 font-semibold">
+                ABL Academy Dossier — Section 0{step} of 02
+              </span>
+              <span className="text-[10px] uppercase tracking-editorial text-charcoal/45">
+                Kasoa Training Campus
+              </span>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <AnimatePresence mode="wait">
+                {step === 1 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h2 className="font-display text-2xl md:text-3xl font-medium mb-2">
+                      Choose your training programme
+                    </h2>
+                    <p className="text-warm-gray text-sm mb-8">
+                      Select the programme duration that best matches your goals and experience level.
+                    </p>
+
+                    <div className="space-y-4">
+                      {trainingPrograms.map((program, idx) => {
+                        const selected = selectedProgram === program.id;
+                        return (
+                          <button
+                            key={program.id}
+                            type="button"
+                            onClick={() => setSelectedProgram(program.id)}
+                            className={cn(
+                              'w-full text-left p-6 border transition-all duration-300',
+                              selected
+                                ? 'border-orange-500 bg-orange-500/5 shadow-sm'
+                                : 'border-charcoal/15 bg-ivory/40 hover:border-charcoal/35 hover:bg-ivory'
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1">
+                                <div className="flex flex-wrap items-center gap-3 mb-2">
+                                  <span className="text-[10px] font-mono uppercase tracking-editorial text-orange-600 font-semibold">
+                                    Tier 0{idx + 1}
+                                  </span>
+                                  <span className="font-display text-xl font-bold text-orange-600">
+                                    {program.duration}
+                                  </span>
+                                  <span className="text-[10px] uppercase tracking-editorial px-2.5 py-0.5 border border-royal-700/20 bg-royal-700/10 text-royal-700 font-medium">
+                                    {program.level}
+                                  </span>
+                                </div>
+                                <h3 className="font-display text-lg font-medium text-charcoal mb-1">
+                                  {program.title}
+                                </h3>
+                                <p className="text-warm-gray text-sm mb-3">
+                                  {program.description}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {program.skills.map((skill) => (
+                                    <span
+                                      key={skill}
+                                      className="text-xs bg-white border border-charcoal/10 text-charcoal/75 px-2.5 py-1"
+                                    >
+                                      {skill}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div
+                                className={cn(
+                                  'w-5 h-5 border flex items-center justify-center shrink-0 mt-1 transition-colors',
+                                  selected
+                                    ? 'border-orange-500 bg-orange-500 text-white'
+                                    : 'border-charcoal/25'
+                                )}
+                              >
+                                {selected && <Check className="w-3 h-3" />}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+
+                {step === 2 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h2 className="font-display text-2xl md:text-3xl font-medium mb-2">
+                      Your personal details
+                    </h2>
+                    <p className="text-warm-gray text-sm mb-8">
+                      We will send your confirmation and reference number to the email address you provide.
+                    </p>
+
+                    {/* Selected program summary */}
+                    {selectedProgramData && (
+                      <div className="bg-ivory/70 border border-charcoal/15 p-5 mb-8 flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-editorial text-orange-600 font-semibold">
+                            Selected Programme
+                          </p>
+                          <p className="font-display text-base font-medium text-charcoal mt-0.5">
+                            {selectedProgramData.duration} — {selectedProgramData.title}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setStep(1)}
+                          className="text-xs uppercase tracking-editorial text-orange-600 hover:underline font-medium"
+                        >
+                          Change
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="space-y-8">
+                      <InputField
+                        label="Full Name *"
+                        value={form.name}
+                        onChange={(v) => setForm({ ...form, name: v })}
+                        placeholder="Enter your full name"
+                        required
+                      />
+                      <InputField
+                        label="Email Address *"
+                        type="email"
+                        value={form.email}
+                        onChange={(v) => setForm({ ...form, email: v })}
+                        placeholder="your@email.com"
+                        required
+                      />
+                      <InputField
+                        label="Phone / WhatsApp Number *"
+                        type="tel"
+                        value={form.phone}
+                        onChange={(v) => setForm({ ...form, phone: v })}
+                        placeholder="e.g. 0548883475"
+                        required
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Error banner */}
+              {error && (
+                <div className="mt-8 flex items-start gap-3 p-4 border border-red-200 bg-red-50 text-red-800 text-sm">
                   <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-700">
-                    Something went wrong. Please try again or contact us on WhatsApp.
-                  </p>
+                  <div className="flex-1">
+                    <p>{error}</p>
+                  </div>
                 </div>
               )}
 
-              {/* Submit */}
-              <div className="pt-4">
-                <Button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full justify-center"
-                  showArrow={false}
-                >
-                  {status === 'loading' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Apply for Training
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </Button>
+              {/* Navigation */}
+              <div className="flex items-center justify-between mt-12 pt-8 border-t border-charcoal/10">
+                {step > 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setStep(step - 1)}
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-editorial font-semibold text-charcoal/70 hover:text-charcoal transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Back
+                  </button>
+                ) : (
+                  <div />
+                )}
+
+                {step < 2 ? (
+                  <button
+                    type="button"
+                    disabled={!canProceed()}
+                    onClick={() => setStep(step + 1)}
+                    className={cn(
+                      'inline-flex items-center gap-2 px-8 py-4 text-xs uppercase tracking-editorial font-semibold transition-all duration-300',
+                      canProceed()
+                        ? 'bg-orange-500 text-white hover:bg-orange-600'
+                        : 'bg-charcoal/10 text-warm-gray/50 cursor-not-allowed'
+                    )}
+                  >
+                    Continue
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <Button type="submit" disabled={!canProceed() || submitting} showArrow={!submitting}>
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Application'
+                    )}
+                  </Button>
+                )}
               </div>
             </form>
-          </div>
-
-          {/* Office info */}
-          <div className="mt-8 p-6 bg-white border border-charcoal/10 rounded-xl">
-            <h3 className="font-display text-lg font-medium text-charcoal mb-2">
-              After You Apply
-            </h3>
-            <p className="text-charcoal/60 text-sm leading-relaxed">
-              Once you submit this form, you will receive a reference number. 
-              Please visit our office at <strong className="text-charcoal">Kasoa, Adam Nana Bus Stop, off Obom Road</strong> to complete the official registration process and make payment.
-            </p>
-          </div>
-
-          {/* WhatsApp alternative */}
-          <div className="mt-8 text-center">
-            <p className="text-charcoal/40 text-sm mb-4">Prefer to apply via WhatsApp?</p>
-            <a
-              href={siteConfig.whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 text-charcoal hover:text-orange-600 transition-colors text-sm font-body font-medium"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Chat with ABL Fashion
-            </a>
           </div>
         </div>
       </section>
@@ -394,45 +544,40 @@ export default function TrainingApplyPage() {
   );
 }
 
-function FormField({
+function InputField({
   label,
   value,
   onChange,
-  error,
-  required,
   placeholder,
   type = 'text',
+  required,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
-  error?: string;
-  required?: boolean;
   placeholder?: string;
   type?: string;
+  required?: boolean;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-xs uppercase tracking-editorial font-body font-medium text-charcoal/70 mb-2">
-        {label} {required && <span className="text-orange-500">*</span>}
+      <label
+        htmlFor={id}
+        className="block text-[11px] uppercase tracking-editorial-wide text-charcoal/65 font-semibold mb-1"
+      >
+        {label}
       </label>
       <input
+        id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={cn(
-          'w-full bg-ivory/50 border rounded-lg px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/30 focus:outline-none transition-colors',
-          error
-            ? 'border-red-300 focus:border-red-500'
-            : 'border-charcoal/15 focus:border-orange-500'
-        )}
+        required={required}
+        className="w-full px-0 py-3 bg-transparent border-0 border-b border-charcoal/25 text-sm text-charcoal placeholder:text-warm-gray/45 focus:outline-none focus:border-orange-500 transition-colors"
       />
-      {error && (
-        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-          <AlertCircle className="w-3 h-3" /> {error}
-        </p>
-      )}
     </div>
   );
 }
+

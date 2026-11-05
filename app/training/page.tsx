@@ -57,11 +57,14 @@ export default function TrainingPage() {
           </Reveal>
 
           <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trainingPrograms.map((program) => (
+            {trainingPrograms.map((program, idx) => (
               <StaggerItem key={program.id}>
-                <div className="group h-full bg-white border border-charcoal/10 rounded-xl p-8 hover:border-orange-500/30 hover:shadow-xl transition-all duration-300 flex flex-col">
-                  <div className="flex items-start justify-between mb-5">
-                    <span className="inline-block px-3 py-1 text-[10px] uppercase tracking-editorial font-semibold rounded-full bg-orange-50 text-orange-600">
+                <div className="group h-full bg-white border border-charcoal/15 rounded-none p-8 hover:border-orange-500/40 hover:shadow-xl transition-all duration-300 flex flex-col">
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-charcoal/10">
+                    <span className="font-display italic text-orange-600 text-sm">
+                      Tier 0{idx + 1}
+                    </span>
+                    <span className="inline-block px-3 py-1 text-[10px] uppercase tracking-editorial font-semibold bg-orange-50 text-orange-600 border border-orange-500/20">
                       {program.level}
                     </span>
                   </div>
@@ -74,7 +77,7 @@ export default function TrainingPage() {
                   </p>
 
                   <div className="mt-auto">
-                    <p className="text-xs uppercase tracking-editorial text-charcoal/40 mb-3">
+                    <p className="text-[10px] uppercase tracking-editorial-wide text-charcoal/40 mb-3">
                       Skills Covered
                     </p>
                     <ul className="space-y-1.5 mb-5">
@@ -98,8 +101,11 @@ export default function TrainingPage() {
 
             {/* CTA card */}
             <StaggerItem>
-              <div className="h-full bg-royal-700 text-white rounded-xl p-8 flex flex-col justify-center items-center text-center">
-                <h3 className="font-display text-2xl font-medium mb-4">
+              <div className="h-full bg-royal-700 text-white rounded-none border border-royal-800 p-8 flex flex-col justify-center items-center text-center">
+                <p className="text-[10px] uppercase tracking-editorial-wide text-orange-400 mb-3">
+                  Academic Guidance
+                </p>
+                <h3 className="font-display text-2xl md:text-3xl font-medium mb-4">
                   Not sure which
                   <br />
                   program is right?
@@ -116,7 +122,7 @@ export default function TrainingPage() {
 
           {/* Enrollment info */}
           <Reveal delay={0.3}>
-            <div className="mt-12 p-6 md:p-8 bg-white border border-charcoal/10 rounded-xl">
+            <div className="mt-12 p-6 md:p-8 bg-white border border-charcoal/15 rounded-none">
               <h3 className="font-display text-xl font-medium text-charcoal mb-2">How to Enroll</h3>
               <p className="text-charcoal/60 text-sm leading-relaxed">
                 Purchase your enrollment form at our office: <strong className="text-charcoal">Kasoa, Adam Nana Bus Stop, off Obom Road</strong>. Fees vary by program duration — contact management for current pricing.
@@ -154,9 +160,9 @@ export default function TrainingPage() {
                   const Icon = iconMap[skill.icon] || Sparkles;
                   return (
                     <StaggerItem key={skill.title}>
-                      <div className="group border border-white/10 rounded-lg p-6 hover:bg-white/5 transition-colors duration-300">
-                      <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center mb-4 group-hover:bg-orange-500 transition-colors duration-300">
-                        <Icon className="w-4 h-4 text-orange-500 group-hover:text-white transition-colors duration-300" />
+                      <div className="group border border-white/15 rounded-none p-6 hover:bg-white/5 transition-colors duration-300">
+                        <div className="w-10 h-10 rounded-none bg-orange-500/20 border border-orange-500/30 flex items-center justify-center mb-4 group-hover:bg-orange-500 transition-colors duration-300">
+                          <Icon className="w-4 h-4 text-orange-500 group-hover:text-white transition-colors duration-300" />
                         </div>
                         <h3 className="font-display text-lg font-medium mb-2">{skill.title}</h3>
                         <p className="text-white/50 text-sm leading-relaxed">{skill.description}</p>
@@ -175,13 +181,20 @@ export default function TrainingPage() {
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <Reveal>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                <Image
-                  src="/images/image_1.jpeg"
-                  alt="Fashion training at ABL"
-                  fill
-                  className="object-cover"
-                />
+              <div className="group">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-none bg-charcoal/5 ring-1 ring-inset ring-charcoal/15">
+                  <Image
+                    src="/images/image_1.jpeg"
+                    alt="Fashion training at ABL"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div className="pt-3 pb-2.5 border-b border-charcoal/15 flex items-center justify-between text-[10px] uppercase tracking-editorial-wide text-charcoal/50">
+                  <span>Academy Archive — Practical Studio</span>
+                  <span className="text-orange-600 font-semibold">Certified Training</span>
+                </div>
               </div>
             </Reveal>
             <div>
@@ -202,7 +215,7 @@ export default function TrainingPage() {
                 </p>
               </Reveal>
               <Reveal delay={0.3}>
-                <ul className="space-y-3">
+                <ul className="space-y-3 border-t border-charcoal/10 pt-6">
                   {[
                     'Recognized certificate upon completion',
                     'Portfolio of real garments you created',
@@ -210,7 +223,7 @@ export default function TrainingPage() {
                     'Pathway to starting your own sewing business',
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-3 text-charcoal/70">
-                      <span className="w-6 h-6 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-none bg-orange-50 border border-orange-500/20 flex items-center justify-center shrink-0">
                         <Check className="w-3.5 h-3.5 text-orange-600" />
                       </span>
                       {item}
@@ -230,6 +243,7 @@ export default function TrainingPage() {
             src="/images/image_2.jpeg"
             alt=""
             fill
+            sizes="33vw"
             className="object-cover"
           />
         </div>
